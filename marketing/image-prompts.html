@@ -93,6 +93,12 @@
   <p class="note">
     出てきた画像は必ず文字を目視で確認してください。1字でも違ったら、その部分だけ指摘して出し直させます。
   </p>
+
+  <p class="note">
+    <strong>アイコンは4案あります。</strong>ボタンで切り替えて全部出させ、
+    <strong>40pxまで縮めて見比べて</strong>から決めてください。Instagramのフィードではその大きさで表示されます。
+    ハイライトカバーは5枚とも同じ線の太さ・同じ余白で揃えること。1枚だけ違うと目立ちます。
+  </p>
 </div>
 
 <script>
@@ -278,18 +284,46 @@
     {
       id: "icon",
       kind: "type",
-      title: "プロフィールアイコン",
+      title: "プロフィールアイコン（4案）",
       use: "Instagram アイコン",
       ratios: ["1:1"],
+      variants: [
+        {
+          label: "配合",
+          text:
+            "two large overlapping circles side by side, forming a lens shape where they meet; " +
+            "the two circles are knocked out in off-white but the overlapping lens is left solid violet, " +
+            "so it reads as two colours being mixed together",
+        },
+        {
+          label: "カ",
+          text:
+            "the single katakana character カ, drawn as a bold geometric logotype with heavy even strokes " +
+            "and rounded stroke ends, confidently filling the space",
+        },
+        {
+          label: "フラスコ",
+          text:
+            "a simple laboratory flask silhouette, and inside the body of the flask three short horizontal " +
+            "bars of differing lengths suggesting written records",
+        },
+        {
+          label: "カード",
+          text:
+            "a rounded-rectangle record card tilted about 8 degrees, with one thick horizontal bar and " +
+            "two thinner shorter bars inside it",
+        },
+      ],
       body:
-        "A flat vector app icon. Background: solid off-white #F7F6F3, edge to edge, no border. " +
-        "Centred: the outline of a rounded-rectangle record card drawn in a single violet #7C5CBF, " +
-        "thick uniform strokes with rounded ends, taller than wide. " +
-        "Inside the card, three horizontal bars in the same violet: the top bar full width and thin, " +
-        "the middle bar full width and noticeably thicker, the bottom bar about two thirds width and thin. " +
-        "The mark fills about 70% of the canvas with even margins on all sides, " +
-        "and must stay clearly readable when cropped to a circle. " +
-        "Completely flat: one single colour, no gradient, no shadow, no texture, no text, no background shapes.",
+        "A flat vector logo mark for a Japanese beauty salon record-keeping app. " +
+        "The entire square canvas is a solid violet #7C5CBF field, edge to edge, with no border and no frame. " +
+        "Centred on that field, knocked out in off-white #F7F6F3: {V}. " +
+        "The mark fills about 62% of the canvas and is optically centred, " +
+        "so it stays unmistakable when the square is cropped to a circle and shown at 40 pixels wide. " +
+        "Where the mark uses strokes they are heavy — roughly 8% of the canvas width — with rounded ends. " +
+        "Absolutely flat: no gradient anywhere including the background, no shadow, no glow, no bevel, " +
+        "no texture, no outer ring, no text, no extra decorative shapes. " +
+        "It must read as a designed brand mark, not as a generic document or file icon.",
     },
     {
       id: "cover",
@@ -298,18 +332,21 @@
       use: "Instagram ハイライト",
       ratios: ["1:1"],
       variants: [
-        { label: "はじめに", text: "the outline of a record card with three horizontal lines inside it" },
-        { label: "使い方", text: "the outline of a smartphone with a check mark inside it" },
-        { label: "料金", text: "a circle containing a Japanese yen currency symbol drawn as line art" },
-        { label: "Q&A", text: "a speech bubble outline with a question mark inside it" },
-        { label: "モニター募集", text: "a circle with a plus sign inside it" },
+        { label: "はじめに", text: "a rounded-rectangle record card with three horizontal bars inside it" },
+        { label: "使い方", text: "a smartphone outline with a bold check mark inside its screen" },
+        { label: "料金", text: "a circle containing the Japanese yen symbol ¥ drawn as a bold geometric mark" },
+        { label: "Q&A", text: "a rounded speech bubble with a bold question mark inside it" },
+        { label: "モニター募集", text: "a circle with a bold plus sign inside it" },
       ],
       body:
-        "A minimal line-art icon centred on a solid off-white #F7F6F3 square canvas. " +
-        "The icon is {V}, drawn in a single violet #7C5CBF with thin uniform strokes and rounded ends. " +
-        "The icon occupies about 40% of the canvas, perfectly centred, with wide empty margins so that " +
-        "it still reads when cropped to a small circle. " +
-        "Completely flat: one colour, no gradient, no shadow, no fill, no text, no frame.",
+        "A flat vector icon tile. The entire square canvas is a solid violet #7C5CBF field, edge to edge, " +
+        "no border, no frame. Centred on it, drawn in off-white #F7F6F3: {V}. " +
+        "Strokes are heavy — roughly 6% of the canvas width — with rounded ends and rounded corners. " +
+        "The icon fills about 40% of the canvas, optically centred, with even empty margins, " +
+        "so it stays clear when the tile is cropped to a small circle. " +
+        "Absolutely flat: one background colour and one mark colour only, no gradient, no shadow, " +
+        "no glow, no fill variation, no text, no outer ring. " +
+        "This is one of a set of five icons that must share identical stroke weight, optical size and margins.",
     },
   ];
 
