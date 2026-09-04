@@ -68,8 +68,8 @@
 <div class="shell">
   <h1>画像プロンプト</h1>
   <p class="lede">
-    ボタンを押すとプロンプト全文がコピーされます。共通条件・サイズ指定も込みなので、
-    そのままGPTに貼るだけです。1枚ずつ投げてください。
+    ボタンを押すとプロンプト全文がコピーされます。共通条件・サイズ・書体・配色・文字組みまで
+    込みなので、そのままGPTに貼るだけです。1枚ずつ投げてください。
   </p>
 
   <p class="note">
@@ -77,28 +77,40 @@
     同じ絵をLP用とInstagram用で2サイズ出したいときに使ってください。
   </p>
 
-  <h2>GPTに投げるもの（写真7点）</h2>
-  <div id="cards"></div>
+  <h2>写真</h2>
+  <div id="cards-photo"></div>
 
-  <h2>GPTに投げないもの</h2>
-  <p class="lede">以下はブランド色と書体を正確に出す必要があるため、こちらで書き出し済みです。</p>
+  <h2>文字入りグラフィック</h2>
+  <p class="lede">
+    書体・配色・文字位置・入れる日本語をすべて指定しています。文字は一字一句そのまま出させます。
+  </p>
+  <div id="cards-graphic"></div>
+
+  <h2>唯一これだけは生成しないもの</h2>
   <div class="done-list">
-    <div><span class="y">✓</span><span>プロフィールアイコン（1080×1080）</span></div>
-    <div><span class="y">✓</span><span>ハイライトカバー 5枚</span></div>
-    <div><span class="y">✓</span><span>文字だけの投稿 3枚（「前回のカラー、思い出せますか。」ほか）</span></div>
-    <div><span class="y">✓</span><span>アプリ画面のスクリーンショット 4業種</span></div>
+    <div><span class="y">✓</span><span>アプリ画面のスクリーンショット 4業種 … <code>marketing/lp/img/app-*.png</code>（実物なので生成する意味がない）</span></div>
   </div>
   <p class="note">
-    日本語の文字は画像生成でほぼ崩れます。文字が入るものはAIに描かせないでください。
+    出てきた画像は必ず文字を目視で確認してください。1字でも違ったら、その部分だけ指摘して出し直させます。
   </p>
 </div>
 
 <script>
-  const COMMON =
+  const COMMON_PHOTO =
     "Photorealistic, natural window light, shallow depth of field, muted desaturated colour palette, " +
     "Japanese salon interior, clean and minimal, no branded products. " +
     "No text, no letters, no numbers, no logos, no watermarks anywhere in the image. " +
     "Do not show recognisable faces — hands, materials and interiors only.";
+
+  // 文字入りグラフィック用。書体と文字の扱いをここで固定する。
+  const COMMON_TYPE =
+    "Typography rules: render the Japanese text exactly as written, character for character, " +
+    "including punctuation. Do not add, translate, abbreviate or invent any other text. " +
+    "Japanese typeface: a classic Mincho serif with high contrast strokes, in the style of " +
+    "Zen Old Mincho / Yu Mincho Heavy — elegant, editorial, not a rounded gothic. " +
+    "Latin and numerals: a light monospace face with wide letter-spacing. " +
+    "Generous margins, calm editorial layout, plenty of empty space, nothing decorative. " +
+    "Flat design: no drop shadows on text, no outlines, no 3D, no watermark, no logo, no signature.";
 
   const RATIOS = {
     "1200x630": "Wide landscape composition, 1200 x 630 pixels, with empty space on the right side for text.",
@@ -184,40 +196,174 @@
     },
   ];
 
-  const assemble = (shot, ratio) => [shot.body, COMMON, RATIOS[ratio]].join("\n\n");
 
-  const container = document.getElementById("cards");
+  // ── 文字入りグラフィック ──────────────────────────────
+  const BRAND =
+    "Brand palette: background ink #101018, text pure white #FFFFFF, " +
+    "accent violet #7C5CBF, secondary grey text #8F8CA0, off-white paper #F7F6F3.";
 
-  for (const shot of SHOTS) {
+  const GRAPHICS = [
+    {
+      id: "post-headline",
+      kind: "type",
+      title: "投稿：前回のカラー、思い出せますか。",
+      use: "フィード #2",
+      ratios: ["1:1", "4:5", "9:16"],
+      body:
+        "A minimal Japanese editorial social media graphic on a dark canvas. " + BRAND + " " +
+        "Background: solid ink #101018 with a soft violet #7C5CBF radial glow spreading from the top centre " +
+        "and fading to nothing by 60% down the canvas. " +
+        "Layout, left aligned with a 9% margin on all sides:\n" +
+        "・Top: small latin monospace label in grey #8F8CA0, wide letter-spacing — SALON KARTE\n" +
+        "・Centre, the main headline in large heavy Mincho serif, pure white, two lines:\n" +
+        "前回のカラー、\n思い出せますか。\n" +
+        "・Bottom left: small latin monospace in grey #8F8CA0 — @karte_lab\n" +
+        "The headline occupies roughly half the canvas height. Nothing else on the canvas.",
+    },
+    {
+      id: "post-monitor",
+      kind: "type",
+      title: "投稿：先行モニター10名募集",
+      use: "フィード #7",
+      ratios: ["1:1", "4:5", "9:16"],
+      body:
+        "A minimal Japanese editorial social media graphic on a dark canvas. " + BRAND + " " +
+        "Background: solid ink #101018 with a soft violet #7C5CBF radial glow from the top centre. " +
+        "Layout, left aligned with a 9% margin:\n" +
+        "・Top: small latin monospace label in grey #8F8CA0, wide letter-spacing — MONITOR - 10 SEATS\n" +
+        "・Main headline in large heavy Mincho serif, pure white, two lines:\n" +
+        "先行モニター\n10名募集\n" +
+        "・Directly under the headline, smaller Japanese gothic sans in light grey #C9C6D6, two lines, " +
+        "about one third the size of the headline:\n" +
+        "1ヶ月使ってみてください。\n使ってくださった方は、その後もずっと無料です。\n" +
+        "・Bottom left: small latin monospace in grey #8F8CA0 — @karte_lab",
+    },
+    {
+      id: "post-noreserve",
+      kind: "type",
+      title: "投稿：予約管理は入っていません",
+      use: "フィード #9 / 予備",
+      ratios: ["1:1", "4:5", "9:16"],
+      body:
+        "A minimal Japanese editorial social media graphic on a dark canvas. " + BRAND + " " +
+        "Background: solid ink #101018 with a soft violet #7C5CBF radial glow from the top centre. " +
+        "Layout, left aligned with a 9% margin:\n" +
+        "・Top: small latin monospace label in grey #8F8CA0, wide letter-spacing — KARTE ONLY\n" +
+        "・Main headline in large heavy Mincho serif, pure white, two lines:\n" +
+        "予約管理は\n入っていません。\n" +
+        "・Under it, smaller Japanese gothic sans in light grey #C9C6D6, two lines:\n" +
+        "予約は今お使いのもので大丈夫です。\nカルテだけに絞って、入力を軽くしました。\n" +
+        "・Bottom left: small latin monospace in grey #8F8CA0 — @karte_lab",
+    },
+    {
+      id: "post-price",
+      kind: "type",
+      title: "投稿：料金",
+      use: "フィード / ハイライト「料金」",
+      ratios: ["1:1", "4:5"],
+      body:
+        "A minimal Japanese editorial social media graphic on an off-white canvas. " + BRAND + " " +
+        "Background: solid off-white #F7F6F3. All text in ink #15161C except where noted. " +
+        "Layout, left aligned with a 9% margin:\n" +
+        "・Top: small latin monospace label in grey, wide letter-spacing — PRICE\n" +
+        "・Headline in heavy Mincho serif, two lines:\n" +
+        "まずは3ヶ月、\n無料でどうぞ。\n" +
+        "・Below, a simple two-row list in Japanese gothic sans, each row a label and a price " +
+        "separated by a thin violet #7C5CBF horizontal rule:\n" +
+        "個人プラン　月980円\n店舗導入パッケージ　月2,980円\n" +
+        "・Under the list, one small line in grey:\n" +
+        "クレジットカードの登録は不要です。\n" +
+        "・Bottom left: small latin monospace in grey — @karte_lab",
+    },
+    {
+      id: "icon",
+      kind: "type",
+      title: "プロフィールアイコン",
+      use: "Instagram アイコン",
+      ratios: ["1:1"],
+      body:
+        "A flat vector app icon. Background: solid off-white #F7F6F3, edge to edge, no border. " +
+        "Centred: the outline of a rounded-rectangle record card drawn in a single violet #7C5CBF, " +
+        "thick uniform strokes with rounded ends, taller than wide. " +
+        "Inside the card, three horizontal bars in the same violet: the top bar full width and thin, " +
+        "the middle bar full width and noticeably thicker, the bottom bar about two thirds width and thin. " +
+        "The mark fills about 70% of the canvas with even margins on all sides, " +
+        "and must stay clearly readable when cropped to a circle. " +
+        "Completely flat: one single colour, no gradient, no shadow, no texture, no text, no background shapes.",
+    },
+    {
+      id: "cover",
+      kind: "type",
+      title: "ハイライトカバー（5種）",
+      use: "Instagram ハイライト",
+      ratios: ["1:1"],
+      variants: [
+        { label: "はじめに", text: "the outline of a record card with three horizontal lines inside it" },
+        { label: "使い方", text: "the outline of a smartphone with a check mark inside it" },
+        { label: "料金", text: "a circle containing a Japanese yen currency symbol drawn as line art" },
+        { label: "Q&A", text: "a speech bubble outline with a question mark inside it" },
+        { label: "モニター募集", text: "a circle with a plus sign inside it" },
+      ],
+      body:
+        "A minimal line-art icon centred on a solid off-white #F7F6F3 square canvas. " +
+        "The icon is {V}, drawn in a single violet #7C5CBF with thin uniform strokes and rounded ends. " +
+        "The icon occupies about 40% of the canvas, perfectly centred, with wide empty margins so that " +
+        "it still reads when cropped to a small circle. " +
+        "Completely flat: one colour, no gradient, no shadow, no fill, no text, no frame.",
+    },
+  ];
+
+  const assemble = (shot, ratio, variant) => {
+    let body = shot.body;
+    if (variant) body = body.replace("{V}", variant.text);
+    const common = shot.kind === "type" ? COMMON_TYPE : COMMON_PHOTO;
+    return [body, common, RATIOS[ratio]].join("\n\n");
+  };
+
+  function build(shot, container) {
     const card = document.createElement("article");
     card.className = "card";
     card.innerHTML =
-      '<header><h3>' + shot.title + '</h3><span class="use">' + shot.use + '</span></header>' +
-      '<div class="ratios"></div>' +
+      '<header><h3>' + shot.title + '</h3><span class="use">' + shot.use + "</span></header>" +
+      '<div class="ratios variants"></div>' +
+      '<div class="ratios sizes"></div>' +
       "<pre></pre>" +
       '<button type="button" class="copy">プロンプトをコピー</button>';
 
-    const ratiosEl = card.querySelector(".ratios");
+    const variantsEl = card.querySelector(".variants");
+    const sizesEl = card.querySelector(".sizes");
     const pre = card.querySelector("pre");
     const button = card.querySelector(".copy");
-    let current = shot.ratios[0];
+
+    let ratio = shot.ratios[0];
+    let variant = shot.variants ? shot.variants[0] : null;
 
     const paint = () => {
-      pre.textContent = assemble(shot, current);
-      [...ratiosEl.children].forEach((b) =>
-        b.setAttribute("aria-pressed", String(b.dataset.ratio === current)),
+      pre.textContent = assemble(shot, ratio, variant);
+      [...sizesEl.children].forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.value === ratio)),
+      );
+      [...variantsEl.children].forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.value === (variant && variant.label))),
       );
       button.textContent = "プロンプトをコピー";
       button.classList.remove("done");
     };
 
-    for (const ratio of shot.ratios) {
+    const chip = (label, value, onPick) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.dataset.ratio = ratio;
-      b.textContent = ratio;
-      b.addEventListener("click", () => { current = ratio; paint(); });
-      ratiosEl.append(b);
+      b.dataset.value = value;
+      b.textContent = label;
+      b.addEventListener("click", () => { onPick(); paint(); });
+      return b;
+    };
+
+    for (const v of shot.variants ?? []) {
+      variantsEl.append(chip(v.label, v.label, () => { variant = v; }));
+    }
+    if (shot.ratios.length > 1) {
+      for (const r of shot.ratios) sizesEl.append(chip(r, r, () => { ratio = r; }));
     }
 
     button.addEventListener("click", async () => {
@@ -238,4 +384,9 @@
     paint();
     container.append(card);
   }
+
+  const photoEl = document.getElementById("cards-photo");
+  const graphicEl = document.getElementById("cards-graphic");
+  SHOTS.forEach((s) => build(s, photoEl));
+  GRAPHICS.forEach((s) => build(s, graphicEl));
 </script>
