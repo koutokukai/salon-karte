@@ -77,19 +77,26 @@
     color: #f3f1f7;
     padding: 3rem 0 0;
   }
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: -30% -40% auto -40%;
-    height: 70%;
-    background: radial-gradient(ellipse at 50% 0%, var(--trade) 0%, transparent 68%);
-    opacity: 0.55;
-    transition: opacity 0.4s;
+  .hero-bg {
+    position: absolute; inset: 0 0 auto 0; width: 100%; height: 58%;
+    object-fit: cover; object-position: 30% 55%;
+    opacity: 0.42; filter: saturate(0.75);
+  }
+  .hero-veil {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, var(--trade) 0%, transparent 62%),
+      linear-gradient(to bottom, rgba(16,16,24,0.55) 0%, rgba(16,16,24,0.92) 46%, #101018 72%);
+    transition: background 0.4s;
     pointer-events: none;
   }
-  .hero > * { position: relative; }
+  .hero > .shell, .hero > .hero-foot { position: relative; z-index: 1; }
   .hero h1 { color: #fff; }
   .hero .lede { color: #b9b6c6; }
+
+  .brand { display: flex; align-items: center; gap: 0.6rem; }
+  .brand img { width: 2.4rem; height: 2.4rem; border-radius: 0.7rem; display: block; }
+  .brand span { font-family: var(--display); font-size: 1rem; font-weight: 700; color: #fff; }
 
   .badge {
     display: inline-flex; align-items: center; gap: 0.5rem;
@@ -156,6 +163,9 @@
   .hero-foot .caption { font-size: 0.82rem; color: #8f8c9d; text-align: center; }
 
   /* ══ 紙 vs アプリ ═══════════════════════════════ */
+
+  .shot { margin: 0; border-radius: 12px; overflow: hidden; background: var(--surface); }
+  .shot img { display: block; width: 100%; height: auto; }
 
   .versus { display: grid; gap: 1rem; }
   @media (min-width: 34rem) { .versus { grid-template-columns: 1fr 1fr; } }
@@ -263,8 +273,15 @@
 
   <!-- ══════════ HERO ══════════ -->
   <header class="hero">
+    <img class="hero-bg" src="img/hero.jpg" alt="" aria-hidden="true" width="1600" height="840">
+    <span class="hero-veil"></span>
+
     <div class="shell stack g-lg">
       <div class="stack g-md">
+        <span class="brand">
+          <img src="img/logo.jpg" alt="サロンカルテ" width="44" height="44">
+          <span>サロンカルテ</span>
+        </span>
         <span class="badge">先行モニター 残り <b id="slots">10</b> 名</span>
         <h1>前回のカラー、<br>思い出せますか。</h1>
         <p class="lede">
@@ -311,6 +328,10 @@
         色は合わせたはず。でも記録が読めない。紙のカルテで起きていたことを、そのまま持ち込まないように作りました。
       </p>
     </div>
+
+    <figure class="shot">
+      <img src="img/paper.jpg" alt="サロンの机に散らばった紙のカルテ" width="900" height="900" loading="lazy">
+    </figure>
 
     <div class="versus">
       <article class="card paper-card">
@@ -364,6 +385,11 @@
         <h3>アレルギー・禁忌は、開いた瞬間に赤で</h3>
         <p>グルーでしみた、妊娠中で強い圧は避ける。忘れてはいけないことほど、探させない場所に置いています。</p>
       </article>
+      <article class="promise">
+        <span class="n">05</span>
+        <h3>言われたところは、その日のうちに直します</h3>
+        <p>いま作っている最中のアプリです。「ここが使いにくい」と言っていただければ、その日か翌日には直して反映します。完成品を押しつけるのではなく、使う方に合わせて作りたい。</p>
+      </article>
     </div>
   </section>
 
@@ -374,7 +400,8 @@
       <span class="headline">10名の方は、<br>ずっと無料です。</span>
       <p>
         期間限定の無料ではありません。モニターとして使ってくださった方の個人プランは、
-        この先も無料のまま。正式公開後に料金が変わっても、変わりません。
+        この先も無料のまま。正式公開後に料金が変わっても、変わりません。<br>
+        そのかわり、使ってみた感想を聞かせてください。<strong>言われたところは、すぐ直します。</strong>
       </p>
     </div>
 
@@ -383,7 +410,7 @@
         <tr><th>募集人数</th><td>10名（ネイル・マツエク・ヘア・リラク）</td></tr>
         <tr><th>期間</th><td>1ヶ月間、実際のお客様のカルテとしてお使いください</td></tr>
         <tr><th>費用</th><td>無料。お支払いもクレジットカードの登録もありません</td></tr>
-        <tr><th>お願い</th><td>1ヶ月後に、感想を一度だけ聞かせてください。<br>「ここが使いにくい」が一番ありがたいです</td></tr>
+        <tr><th>お願い</th><td>使ってみて気づいたことを、気軽に教えてください。<br><strong>「ここが使いにくい」が一番ありがたいです。すぐ直します</strong></td></tr>
         <tr><th>データ</th><td>いつでもCSVで全部持ち出せます。やめるときもそのままお渡しします</td></tr>
         <tr><th>公開後</th><td>個人プラン 月980円（3ヶ月無料）。モニターの方は対象外＝無料のまま</td></tr>
       </tbody>
