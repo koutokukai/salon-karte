@@ -118,6 +118,12 @@
     "Generous margins, calm editorial layout, plenty of empty space, nothing decorative. " +
     "Flat design: no drop shadows on text, no outlines, no 3D, no watermark, no logo, no signature.";
 
+  // ロゴマーク用。文字は入らないので、書体の指示は付けない。
+  const COMMON_MARK =
+    "Flat vector style. No text, no letters, no numbers, no logotype, no signature, no watermark, " +
+    "no border and no background pattern. Geometry is even and deliberate — this is a brand mark, " +
+    "simple enough that a designer could redraw it by hand from the image.";
+
   const RATIOS = {
     "1200x630": "Wide landscape composition, 1200 x 630 pixels, with empty space on the right side for text.",
     "1:1": "Square 1:1 composition, subject centred.",
@@ -283,7 +289,7 @@
     },
     {
       id: "icon",
-      kind: "type",
+      kind: "mark",
       title: "プロフィールアイコン（4案）",
       use: "Instagram アイコン",
       ratios: ["1:1"],
@@ -327,7 +333,7 @@
     },
     {
       id: "cover",
-      kind: "type",
+      kind: "mark",
       title: "ハイライトカバー（5種）",
       use: "Instagram ハイライト",
       ratios: ["1:1"],
@@ -353,7 +359,8 @@
   const assemble = (shot, ratio, variant) => {
     let body = shot.body;
     if (variant) body = body.replace("{V}", variant.text);
-    const common = shot.kind === "type" ? COMMON_TYPE : COMMON_PHOTO;
+    const common =
+      shot.kind === "mark" ? COMMON_MARK : shot.kind === "type" ? COMMON_TYPE : COMMON_PHOTO;
     return [body, common, RATIOS[ratio]].join("\n\n");
   };
 
