@@ -1,0 +1,241 @@
+<title>サロンカルテ 画像プロンプト</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400&display=swap">
+<style>
+  :root {
+    --ink:#15161c; --ink-2:#5b606b; --paper:#f7f6f3; --surface:#fff;
+    --line:#e3e0d9; --violet:#7c5cbf; --ok:#2e7d5b;
+    --display:"Zen Old Mincho",serif; --body:"Zen Kaku Gothic New",sans-serif; --mono:"Roboto Mono",monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:#eceaf3; --ink-2:#a3a2ae; --paper:#131319; --surface:#1c1c24;
+      --line:#32323e; --violet:#a992e4; --ok:#7cbb92;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink:#eceaf3; --ink-2:#a3a2ae; --paper:#131319; --surface:#1c1c24;
+    --line:#32323e; --violet:#a992e4; --ok:#7cbb92;
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--body); line-height:1.8; }
+  .shell { max-width:44rem; margin:0 auto; padding:2.5rem 1.25rem 4rem; }
+
+  h1 { font-family:var(--display); font-size:1.75rem; margin:0 0 .5rem; }
+  h2 { font-family:var(--display); font-size:1.15rem; margin:2.5rem 0 .75rem; }
+  p { margin:0; }
+  .lede { color:var(--ink-2); font-size:.95rem; }
+
+  .note {
+    border-left:3px solid var(--violet); padding:.35rem 0 .35rem .9rem;
+    font-size:.9rem; color:var(--ink-2); margin:1.25rem 0 0;
+  }
+
+  .card {
+    background:var(--surface); border:1px solid var(--line); border-radius:10px;
+    padding:1.1rem 1.15rem; margin-top:.9rem;
+  }
+  .card header { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; }
+  .card h3 { font-size:1rem; margin:0; }
+  .use { font-family:var(--mono); font-size:.68rem; letter-spacing:.08em; color:var(--ink-2); }
+
+  .ratios { display:flex; gap:.35rem; flex-wrap:wrap; margin:.75rem 0; }
+  .ratios button {
+    font-family:var(--mono); font-size:.72rem; color:var(--ink); background:transparent;
+    border:1px solid var(--line); border-radius:999px; padding:.4rem .75rem; min-height:36px; cursor:pointer;
+  }
+  .ratios button[aria-pressed="true"] { background:var(--violet); border-color:var(--violet); color:#fff; }
+
+  pre {
+    font-family:var(--mono); font-size:.74rem; line-height:1.75; white-space:pre-wrap; word-break:break-word;
+    background:var(--paper); border:1px dashed var(--line); border-radius:8px;
+    padding:.85rem; margin:0; max-height:11rem; overflow:auto; color:var(--ink-2);
+  }
+
+  .copy {
+    font-family:var(--body); font-size:.92rem; font-weight:700; color:var(--paper); background:var(--ink);
+    border:0; border-radius:8px; padding:.75rem 1rem; min-height:46px; width:100%; margin-top:.7rem; cursor:pointer;
+  }
+  .copy.done { background:var(--ok); }
+
+  .done-list { display:grid; gap:.45rem; font-size:.93rem; margin-top:.6rem; }
+  .done-list div { display:grid; grid-template-columns:1.4rem 1fr; gap:.4rem; }
+  .done-list .y { color:var(--ok); font-weight:700; }
+
+  button:focus-visible, .copy:focus-visible { outline:2px solid var(--violet); outline-offset:2px; }
+</style>
+
+<div class="shell">
+  <h1>画像プロンプト</h1>
+  <p class="lede">
+    ボタンを押すとプロンプト全文がコピーされます。共通条件・サイズ指定も込みなので、
+    そのままGPTに貼るだけです。1枚ずつ投げてください。
+  </p>
+
+  <p class="note">
+    サイズのボタンを切り替えると、コピーされる文章の最後の1行だけが変わります。
+    同じ絵をLP用とInstagram用で2サイズ出したいときに使ってください。
+  </p>
+
+  <h2>GPTに投げるもの（写真7点）</h2>
+  <div id="cards"></div>
+
+  <h2>GPTに投げないもの</h2>
+  <p class="lede">以下はブランド色と書体を正確に出す必要があるため、こちらで書き出し済みです。</p>
+  <div class="done-list">
+    <div><span class="y">✓</span><span>プロフィールアイコン（1080×1080）</span></div>
+    <div><span class="y">✓</span><span>ハイライトカバー 5枚</span></div>
+    <div><span class="y">✓</span><span>文字だけの投稿 3枚（「前回のカラー、思い出せますか。」ほか）</span></div>
+    <div><span class="y">✓</span><span>アプリ画面のスクリーンショット 4業種</span></div>
+  </div>
+  <p class="note">
+    日本語の文字は画像生成でほぼ崩れます。文字が入るものはAIに描かせないでください。
+  </p>
+</div>
+
+<script>
+  const COMMON =
+    "Photorealistic, natural window light, shallow depth of field, muted desaturated colour palette, " +
+    "Japanese salon interior, clean and minimal, no branded products. " +
+    "No text, no letters, no numbers, no logos, no watermarks anywhere in the image. " +
+    "Do not show recognisable faces — hands, materials and interiors only.";
+
+  const RATIOS = {
+    "1200x630": "Wide landscape composition, 1200 x 630 pixels, with empty space on the right side for text.",
+    "1:1": "Square 1:1 composition, subject centred.",
+    "4:5": "Vertical 4:5 composition.",
+    "9:16": "Vertical 9:16 composition for a full-screen phone story.",
+  };
+
+  const SHOTS = [
+    {
+      id: "hero",
+      title: "LPヒーロー（手元とスマホ）",
+      use: "LP最上部 / OGP",
+      ratios: ["1200x630", "1:1", "4:5"],
+      body:
+        "A close-up of a woman's hands holding a smartphone at a small private nail salon desk, " +
+        "seen from slightly above at a 30 degree angle. Out of focus behind her: a compact salon table, " +
+        "a folded towel, a few polish bottles. Warm afternoon light from a window on the left, soft shadows, " +
+        "a calm and quiet atmosphere. Muted beige and warm grey tones.",
+    },
+    {
+      id: "paper",
+      title: "紙カルテの山",
+      use: "紙とアプリの比較 / 投稿#3",
+      ratios: ["1:1", "4:5", "1200x630"],
+      body:
+        "A stack of handwritten paper customer record cards scattered across a salon desk, " +
+        "some cards bent and overlapping, a ballpoint pen resting on top, a smartphone face-down beside them. " +
+        "Slightly messy but clean. Flat lay shot from directly above. Soft natural light, " +
+        "muted warm grey and cream tones, conveying that this is hard to search through.",
+    },
+    {
+      id: "nail",
+      title: "ネイル施術",
+      use: "業種イメージ / 投稿#1",
+      ratios: ["4:5", "1:1", "9:16"],
+      body:
+        "Extreme close-up of a nail technician's hands applying pale pink gel polish to a client's fingernail " +
+        "at a small home salon desk. A soft lavender-purple cloth blurred in the background. " +
+        "Macro focus on the nail, everything else softly out of focus. Precise, calm, professional.",
+    },
+    {
+      id: "eyelash",
+      title: "マツエク施術",
+      use: "業種イメージ / 投稿#4",
+      ratios: ["4:5", "1:1", "9:16"],
+      body:
+        "Close-up of an eyelash artist's gloved hands holding fine tweezers just above a client's closed eye. " +
+        "The client lies on a treatment bed with a white towel wrapped around her hair. " +
+        "Dusty rose accent lighting. Extremely shallow depth of field with focus on the tweezers. " +
+        "Quiet, delicate, clinical but warm.",
+    },
+    {
+      id: "hair",
+      title: "ヘアカラーの調合",
+      use: "業種イメージ / 投稿#6",
+      ratios: ["4:5", "1:1", "9:16"],
+      body:
+        "A hairdresser's hands mixing hair colour in a small bowl with a tint brush on a wooden salon counter, " +
+        "several unlabelled colour tubes lined up neatly beside the bowl. Warm brown and beige tones. " +
+        "Shot from above at a slight angle in natural light, focus on the mixing bowl.",
+    },
+    {
+      id: "relax",
+      title: "リラク施術",
+      use: "業種イメージ / 投稿#8",
+      ratios: ["4:5", "1:1", "9:16"],
+      body:
+        "A therapist's hands resting on a client's shoulder during a relaxation massage. " +
+        "The client lies face down covered with a soft white towel on a treatment bed. " +
+        "Sage green and warm neutral tones, a folded towel and an unlabelled oil bottle out of focus nearby. " +
+        "Very soft diffused light, deeply calm atmosphere.",
+    },
+    {
+      id: "desk",
+      title: "サロンの机まわり（引き）",
+      use: "投稿#9 / 予備",
+      ratios: ["1:1", "1200x630", "4:5"],
+      body:
+        "A wide shot of a small tidy private salon corner: a wooden desk, one chair, a folded white towel, " +
+        "a small green plant and a tablet propped on a stand. Morning light through a sheer curtain. " +
+        "Muted natural tones, spacious and minimal. Nobody in the frame.",
+    },
+  ];
+
+  const assemble = (shot, ratio) => [shot.body, COMMON, RATIOS[ratio]].join("\n\n");
+
+  const container = document.getElementById("cards");
+
+  for (const shot of SHOTS) {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML =
+      '<header><h3>' + shot.title + '</h3><span class="use">' + shot.use + '</span></header>' +
+      '<div class="ratios"></div>' +
+      "<pre></pre>" +
+      '<button type="button" class="copy">プロンプトをコピー</button>';
+
+    const ratiosEl = card.querySelector(".ratios");
+    const pre = card.querySelector("pre");
+    const button = card.querySelector(".copy");
+    let current = shot.ratios[0];
+
+    const paint = () => {
+      pre.textContent = assemble(shot, current);
+      [...ratiosEl.children].forEach((b) =>
+        b.setAttribute("aria-pressed", String(b.dataset.ratio === current)),
+      );
+      button.textContent = "プロンプトをコピー";
+      button.classList.remove("done");
+    };
+
+    for (const ratio of shot.ratios) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.dataset.ratio = ratio;
+      b.textContent = ratio;
+      b.addEventListener("click", () => { current = ratio; paint(); });
+      ratiosEl.append(b);
+    }
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(pre.textContent);
+        button.textContent = "コピーしました";
+        button.classList.add("done");
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(pre);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        button.textContent = "選択しました。長押しでコピー";
+      }
+    });
+
+    paint();
+    container.append(card);
+  }
+</script>

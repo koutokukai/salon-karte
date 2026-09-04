@@ -28,4 +28,8 @@ html = html.replace(
 );
 
 writeFileSync(join(here, "published.html"), html);
-console.log("published.html:", (html.length / 1024 / 1024).toFixed(2), "MB");
+
+// Vercel から /lp で配信できるよう public にも書き出す（next.config.ts で /lp → /lp.html）
+writeFileSync(join(here, "..", "..", "public", "lp.html"), html);
+
+console.log("published.html / public/lp.html:", (html.length / 1024 / 1024).toFixed(2), "MB");
