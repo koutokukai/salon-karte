@@ -145,3 +145,28 @@ model Chat {
   @@index([tenantId, customerId, createdAt])
   @@map("chats")
 }
+
+/// Instagram 自動投稿の実績。テナントに属さない自社運用テーブル。
+model SocialPost {
+  socialPostId String   @id @default(cuid()) @map("social_post_id")
+  /// content/instagram-queue.json の slug と一致させる
+  slug         String   @unique
+  mediaId      String?  @map("media_id")
+  permalink    String?
+  status       String   @default("pending") // pending | posted | failed
+  error        String?
+  postedAt     DateTime? @map("posted_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("social_posts")
+}
+
+/// アプリ全体の設定値。長期アクセストークンの保管に使う（60日で失効するため差し替えが必要）。
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
+}
