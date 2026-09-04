@@ -1,0 +1,681 @@
+<title>サロンカルテ 先行モニター</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ink: #16181d;
+    --ink-soft: #5a606c;
+    --paper: #f6f5f2;
+    --surface: #ffffff;
+    --line: #e2e0da;
+    --rule: #ebe9e3;
+    --accent: #7c5cbf;
+    --accent-soft: #f2edfa;
+    --danger: #c0392f;
+
+    --nail: #7c5cbf;
+    --eyelash: #b8607b;
+    --hair: #8a6a4f;
+    --relax: #4f8060;
+
+    --display: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --body: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    --mono: "Roboto Mono", ui-monospace, monospace;
+
+    --shell: 34rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #eceaf3;
+      --ink-soft: #a2a1ad;
+      --paper: #14141a;
+      --surface: #1d1d25;
+      --line: #33333f;
+      --rule: #2a2a34;
+      --accent: #a68ae0;
+      --accent-soft: #262035;
+      --danger: #e58179;
+      --nail: #a68ae0;
+      --eyelash: #d9899f;
+      --hair: #bb9975;
+      --relax: #78b48c;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ink: #eceaf3;
+    --ink-soft: #a2a1ad;
+    --paper: #14141a;
+    --surface: #1d1d25;
+    --line: #33333f;
+    --rule: #2a2a34;
+    --accent: #a68ae0;
+    --accent-soft: #262035;
+    --danger: #e58179;
+    --nail: #a68ae0;
+    --eyelash: #d9899f;
+    --hair: #bb9975;
+    --relax: #78b48c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+
+  section { padding: 3.25rem 0; }
+  section + section { border-top: 1px solid var(--rule); }
+
+  h1, h2, h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    line-height: 1.4;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h1 { font-size: 1.95rem; letter-spacing: 0.01em; }
+  h2 { font-size: 1.3rem; }
+  h3 { font-size: 1.02rem; }
+
+  p { margin: 0; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .stack { display: flex; flex-direction: column; }
+  .stack-sm { gap: 0.6rem; }
+  .stack-md { gap: 1.1rem; }
+  .stack-lg { gap: 1.75rem; }
+
+  .lede { color: var(--ink-soft); font-size: 0.97rem; }
+
+  /* ── hero ───────────────────────────────────── */
+
+  header.hero { padding: 2.5rem 0 3rem; }
+
+  .counter {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--danger);
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    padding: 0.25rem 0.8rem;
+    align-self: flex-start;
+  }
+  .counter b { font-size: 1rem; font-weight: 500; }
+
+  .hero-note {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--accent);
+    padding-left: 0.85rem;
+  }
+
+  /* ── 業種スイッチ＋カルテ見本 ─────────────────── */
+
+  .switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .switch button {
+    font-family: var(--body);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    min-height: 44px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .switch button[aria-pressed="true"] {
+    background: var(--trade);
+    border-color: var(--trade);
+    color: #fff;
+  }
+  .switch button:focus-visible,
+  .apply-btn:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--trade, var(--accent));
+    outline-offset: 2px;
+  }
+
+  .karte {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .karte-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: var(--trade);
+    color: #fff;
+  }
+  .karte-head strong { font-family: var(--display); font-size: 1rem; }
+  .karte-head span { font-family: var(--mono); font-size: 0.72rem; opacity: 0.9; }
+
+  .karte-rows { padding: 0.35rem 1rem 0.9rem; }
+
+  .karte-row {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .karte-row:last-child { border-bottom: 0; }
+
+  .karte-row dt {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .karte-row dd {
+    margin: 0;
+    font-size: 0.94rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .karte-row dd em {
+    font-style: normal;
+    color: var(--trade);
+    font-weight: 700;
+  }
+
+  .karte-foot {
+    padding: 0.75rem 1rem;
+    background: var(--paper);
+    border-top: 1px solid var(--rule);
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  /* ── 約束 ────────────────────────────────────── */
+
+  .promises { display: flex; flex-direction: column; gap: 1.6rem; }
+
+  .promise { display: grid; grid-template-columns: 2.1rem 1fr; gap: 0.9rem; }
+  .promise .n {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    padding-top: 0.35rem;
+  }
+  .promise p { font-size: 0.93rem; color: var(--ink-soft); }
+
+  /* ── 特典 ────────────────────────────────────── */
+
+  .gift {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 1.4rem 1.25rem;
+  }
+  .gift .big {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    line-height: 1.45;
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  .terms { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  .terms th, .terms td {
+    text-align: left;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .terms th {
+    font-family: var(--mono);
+    font-weight: 400;
+    font-size: 0.74rem;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+    width: 7rem;
+  }
+
+  .fit { display: grid; gap: 0.5rem; font-size: 0.92rem; }
+  .fit div { display: grid; grid-template-columns: 1.4rem 1fr; gap: 0.4rem; }
+  .fit .yes { color: var(--relax); font-family: var(--mono); }
+  .fit .no { color: var(--ink-soft); font-family: var(--mono); }
+
+  /* ── 応募 ────────────────────────────────────── */
+
+  .field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .field label { font-size: 0.85rem; font-weight: 500; }
+
+  input, select, textarea {
+    font-family: var(--body);
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.7rem 0.8rem;
+    min-height: 48px;
+    width: 100%;
+  }
+  textarea { min-height: 84px; resize: vertical; line-height: 1.7; }
+
+  .apply-btn {
+    font-family: var(--body);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--paper);
+    background: var(--ink);
+    border: 1px solid var(--ink);
+    border-radius: 4px;
+    padding: 0.9rem 1rem;
+    min-height: 56px;
+    width: 100%;
+    cursor: pointer;
+  }
+  .apply-btn.secondary {
+    color: var(--ink);
+    background: transparent;
+  }
+  .apply-btn[disabled] { opacity: 0.45; cursor: default; }
+
+  .draft {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.75;
+    white-space: pre-wrap;
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    padding: 0.9rem 1rem;
+    color: var(--ink-soft);
+  }
+
+  .sent { font-size: 0.85rem; color: var(--relax); min-height: 1.4rem; }
+
+  /* ── FAQ ─────────────────────────────────────── */
+
+  details {
+    border-bottom: 1px solid var(--rule);
+    padding: 0.9rem 0;
+  }
+  summary {
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "＋"; color: var(--ink-soft); font-family: var(--mono); }
+  details[open] summary::after { content: "−"; }
+  details p { margin-top: 0.7rem; font-size: 0.9rem; color: var(--ink-soft); }
+
+  footer {
+    padding: 2.5rem 0 3.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="shell" id="app" style="--trade: var(--nail)">
+
+  <header class="hero stack stack-lg">
+    <div class="stack stack-md">
+      <span class="counter">先行モニター <b>10</b> 名</span>
+      <h1>前回のカラー、<br>思い出せますか。</h1>
+      <p class="lede">
+        紙のカルテも、スマホのメモも、探している間にお客様は待っています。
+        施術の記録だけに絞った、個人サロンのためのカルテアプリを作りました。
+        使ってくださる10名を探しています。
+      </p>
+      <p class="hero-note">
+        インストール不要。URLを開くだけ。<br>
+        機種変更しても、カルテは消えません。
+      </p>
+    </div>
+
+    <div class="stack stack-md">
+      <span class="eyebrow">業種を選ぶと、カルテが変わります</span>
+      <div class="switch" role="group" aria-label="業種を選ぶ">
+        <button type="button" data-trade="nail" aria-pressed="true">ネイル</button>
+        <button type="button" data-trade="eyelash" aria-pressed="false">マツエク</button>
+        <button type="button" data-trade="hair" aria-pressed="false">ヘア</button>
+        <button type="button" data-trade="relax" aria-pressed="false">リラク</button>
+      </div>
+
+      <article class="karte" aria-live="polite">
+        <div class="karte-head">
+          <strong id="k-name">山田 花子 様</strong>
+          <span id="k-date">2026/08/20</span>
+        </div>
+        <dl class="karte-rows" id="k-rows"></dl>
+        <p class="karte-foot" id="k-foot"></p>
+      </article>
+
+      <p class="lede" style="font-size:0.86rem">
+        ※ 画面は見本です。入力項目は業種ごとに変わり、配色も変わります。
+      </p>
+    </div>
+  </header>
+
+  <section class="stack stack-lg">
+    <div class="stack stack-sm">
+      <span class="eyebrow">このアプリが約束すること</span>
+      <h2>増やしたのは機能ではなく、<br>やめる理由の少なさです。</h2>
+    </div>
+
+    <div class="promises">
+      <div class="promise">
+        <span class="n">01</span>
+        <div class="stack stack-sm">
+          <h3>前のカルテを、そのままコピーできます</h3>
+          <p>2回目以降のお客様は、前回の内容を引き継いで数タップ。紙に書くより速く終わらなければ、続きません。</p>
+        </div>
+      </div>
+      <div class="promise">
+        <span class="n">02</span>
+        <div class="stack stack-sm">
+          <h3>紙のカルテは、捨てなくて大丈夫です</h3>
+          <p>過去のぶんを打ち直す必要はありません。紙を写真で撮って貼るだけ。今日ぶんから前向きに貯めていきます。</p>
+        </div>
+      </div>
+      <div class="promise">
+        <span class="n">03</span>
+        <div class="stack stack-sm">
+          <h3>予約管理は、入っていません</h3>
+          <p>予約はサロンボードなど今お使いのもので。こちらはカルテだけ。乗り換えではなく、足すだけの道具です。</p>
+        </div>
+      </div>
+      <div class="promise">
+        <span class="n">04</span>
+        <div class="stack stack-sm">
+          <h3>アレルギー・禁忌は、開いた瞬間に赤で出ます</h3>
+          <p>グルーでしみた、妊娠中で強い圧は避ける。忘れてはいけないことほど、探させない場所に置いています。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack stack-lg">
+    <div class="stack stack-sm">
+      <span class="eyebrow">モニター特典</span>
+      <h2>10名の方には、<span class="big">個人プランを<br>ずっと無料でお使いいただきます。</span></h2>
+    </div>
+
+    <div class="gift stack stack-sm">
+      <p style="font-size:0.93rem">
+        期間限定の無料ではありません。モニターとして使ってくださった方の個人プランは、
+        この先も無料のままです。正式公開後に料金が変わっても、変わりません。
+      </p>
+    </div>
+
+    <table class="terms">
+      <tbody>
+        <tr><th>募集人数</th><td>10名（ネイル・マツエク・ヘア・リラク 各業種）</td></tr>
+        <tr><th>期間</th><td>1ヶ月間、実際のお客様のカルテとしてお使いください</td></tr>
+        <tr><th>費用</th><td>無料。お支払いは一切ありません。クレジットカードの登録もありません</td></tr>
+        <tr><th>お願い</th><td>1ヶ月後に、使ってみた感想を一度だけ聞かせてください。<br>「ここが使いにくい」が一番ありがたいです</td></tr>
+        <tr><th>データ</th><td>いつでもCSVで全部持ち出せます。やめるときも、そのまま出してお渡しします</td></tr>
+        <tr><th>正式公開後</th><td>個人プラン 月980円（3ヶ月無料）。モニターの方は対象外＝無料のまま</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="stack stack-lg">
+    <div class="stack stack-sm">
+      <span class="eyebrow">向き・不向き</span>
+      <h2>こういう方に使ってほしい</h2>
+    </div>
+
+    <div class="fit">
+      <div><span class="yes">○</span><span>これから開業する、開業して間もない</span></div>
+      <div><span class="yes">○</span><span>自宅サロン・お一人で運営している</span></div>
+      <div><span class="yes">○</span><span>紙のカルテ、スマホのメモ、写真フォルダに散らばっている</span></div>
+      <div><span class="yes">○</span><span>お客様の数はこれから増やしていく</span></div>
+      <div><span class="no">×</span><span>すでに顧客管理システムを入れて満足している</span></div>
+      <div><span class="no">×</span><span>予約管理を置き換えたい（こちらは対応していません）</span></div>
+      <div><span class="no">×</span><span>複数店舗をまとめて管理したい（別のご案内になります）</span></div>
+    </div>
+  </section>
+
+  <section class="stack stack-lg" id="apply">
+    <div class="stack stack-sm">
+      <span class="eyebrow">応募</span>
+      <h2>下に入力すると、<br>送る文面ができあがります。</h2>
+      <p class="lede">
+        入力した内容はこの画面の中だけで文章になります。送信ボタンではなく、
+        できた文面をコピーしてDMやメールで送ってください。どこにも自動送信されません。
+      </p>
+    </div>
+
+    <form class="stack stack-md" id="form" autocomplete="on">
+      <div class="field">
+        <label for="f-name">お名前 / サロン名</label>
+        <input id="f-name" name="name" type="text" placeholder="例：ネイルサロン ○○" required>
+      </div>
+
+      <div class="field">
+        <label for="f-trade">業種</label>
+        <select id="f-trade" name="trade">
+          <option value="ネイル">ネイル</option>
+          <option value="マツエク">マツエク</option>
+          <option value="ヘア">ヘア</option>
+          <option value="リラク">リラクゼーション・整体</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-now">今のカルテ管理</label>
+        <select id="f-now" name="now">
+          <option value="紙のカルテ">紙のカルテ</option>
+          <option value="スマホのメモ・写真">スマホのメモ・写真</option>
+          <option value="特に残していない">特に残していない</option>
+          <option value="他のアプリを使用中">他のアプリを使用中</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="f-word">困っていること（任意）</label>
+        <textarea id="f-word" name="word" placeholder="例：前回のカラー配合を探すのに時間がかかる"></textarea>
+      </div>
+
+      <p class="draft" id="draft"></p>
+
+      <button type="button" class="apply-btn" id="copy">この文面をコピーする</button>
+      <p class="sent" id="sent" role="status"></p>
+      <p class="lede" style="font-size:0.86rem">
+        コピーした文面を、そのままこちらへのDM、またはメールに貼って送ってください。
+        折り返しご案内をお送りします。
+      </p>
+    </form>
+  </section>
+
+  <section class="stack stack-md">
+    <span class="eyebrow">よくある質問</span>
+
+    <div>
+      <details>
+        <summary>アプリのインストールは必要ですか</summary>
+        <p>不要です。お送りするURLを開くだけで使えます。ホーム画面に追加すれば、アプリと同じようにアイコンから開けます。</p>
+      </details>
+      <details>
+        <summary>スマホを買い替えたらデータは消えますか</summary>
+        <p>消えません。データは端末ではなくインターネット上に保存されるため、機種変更しても、iPhoneからAndroidに替えても、同じIDでログインすればそのままです。</p>
+      </details>
+      <details>
+        <summary>パソコンやタブレットでも使えますか</summary>
+        <p>使えます。同じIDで、スマホ・タブレット・パソコンのどれからでも同じカルテが見られます。</p>
+      </details>
+      <details>
+        <summary>お客様の個人情報を預けるのが不安です</summary>
+        <p>他のサロンから、あなたのお客様の情報が見えることはありません。またデータはいつでもCSVで全件お渡しできます。やめるときに人質にはしません。</p>
+      </details>
+      <details>
+        <summary>1ヶ月使ってみて、合わなかったら</summary>
+        <p>やめていただいて構いません。理由も不要です。データはCSVでお渡しします。「合わなかった理由」だけ教えていただけると助かります。</p>
+      </details>
+      <details>
+        <summary>予約もこれで管理できますか</summary>
+        <p>できません。予約は今お使いのものを続けてください。カルテだけに絞ることで、入力を軽くしています。</p>
+      </details>
+    </div>
+  </section>
+
+  <footer class="stack stack-sm">
+    <p>サロンカルテ ／ ネイル・マツエク・ヘア・リラクの個人サロン向け 顧客カルテ</p>
+    <p>先行モニター10名募集中。お問い合わせはDMまたはメールでお気軽にどうぞ。</p>
+  </footer>
+
+</div>
+
+<script>
+  const TRADES = {
+    nail: {
+      label: "ネイル",
+      menu: "ワンカラー＋アート",
+      rows: [
+        ["カラー配合", "P-12 : 白 = <em>3 : 1</em>（2度塗り）"],
+        ["形 / 長さ", "オーバル / ショート"],
+        ["オフ", "自店オフ あり"],
+        ["施術時間", "90分"],
+      ],
+      foot: "次回目安 24日後 ／ 担当 佐藤",
+    },
+    eyelash: {
+      label: "マツエク",
+      menu: "まつげエクステ 120本",
+      rows: [
+        ["カール", "<em>Cカール</em> 0.15mm / 11mm"],
+        ["本数", "120本"],
+        ["グルー", "低刺激グルー A"],
+        ["施術時間", "75分"],
+      ],
+      foot: "⚠ グルーでしみた経験あり ／ 次回目安 21日後",
+    },
+    hair: {
+      label: "ヘア",
+      menu: "カット＋カラー",
+      rows: [
+        ["カラー配合", "アッシュ8 : ベージュ7 = <em>1 : 1</em>"],
+        ["薬剤", "OX6% ／ 放置 20分"],
+        ["カット", "肩上5cm"],
+        ["施術時間", "120分"],
+      ],
+      foot: "次回目安 49日後 ／ 店販：モイストシャンプー",
+    },
+    relax: {
+      label: "リラク",
+      menu: "全身もみほぐし 60分",
+      rows: [
+        ["圧", "<em>やや強</em>"],
+        ["主訴", "肩こり・眼精疲労"],
+        ["施術箇所", "肩 / 首 / 肩甲骨まわり"],
+        ["オイル", "ラベンダー"],
+      ],
+      foot: "⚠ 妊娠中・腰への強圧は不可 ／ 次回目安 14日後",
+    },
+  };
+
+  const app = document.getElementById("app");
+  const rowsEl = document.getElementById("k-rows");
+  const footEl = document.getElementById("k-foot");
+  const buttons = [...document.querySelectorAll(".switch button")];
+
+  function render(key) {
+    const t = TRADES[key];
+    app.style.setProperty("--trade", "var(--" + key + ")");
+    rowsEl.innerHTML =
+      '<div class="karte-row"><dt>メニュー</dt><dd>' + t.menu + "</dd></div>" +
+      t.rows
+        .map((r) => '<div class="karte-row"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></div>")
+        .join("");
+    footEl.textContent = t.foot;
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.trade === key)));
+  }
+
+  buttons.forEach((b) => b.addEventListener("click", () => render(b.dataset.trade)));
+  render("nail");
+
+  // ── 応募文面の組み立て ──────────────────────────
+  const form = document.getElementById("form");
+  const draft = document.getElementById("draft");
+  const sent = document.getElementById("sent");
+
+  function buildDraft() {
+    const name = form.name.value.trim() || "（サロン名）";
+    const trade = form.trade.value;
+    const now = form.now.value;
+    const word = form.word.value.trim();
+
+    draft.textContent =
+      "サロンカルテのモニターに応募します。\n\n" +
+      "サロン名：" + name + "\n" +
+      "業種：" + trade + "\n" +
+      "今のカルテ管理：" + now +
+      (word ? "\n困っていること：" + word : "") +
+      "\n\n1ヶ月使ってみます。よろしくお願いします。";
+  }
+
+  form.addEventListener("input", () => {
+    buildDraft();
+    sent.textContent = "";
+  });
+  buildDraft();
+
+  document.getElementById("copy").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(draft.textContent);
+      sent.textContent = "コピーしました。DMまたはメールに貼り付けて送ってください。";
+    } catch {
+      const range = document.createRange();
+      range.selectNodeContents(draft);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      sent.textContent = "文面を選択しました。長押ししてコピーしてください。";
+    }
+  });
+</script>
