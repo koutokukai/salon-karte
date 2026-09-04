@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/db";
+import { env } from "@/lib/env";
 
 /**
  * Instagram Content Publishing API。
@@ -25,18 +26,18 @@ import { prisma } from "@/lib/db";
  *   B) Facebookページ経由        … graph.facebook.com  ／ システムユーザーなら無期限
  * B を使う場合は IG_API_BASE に https://graph.facebook.com/v21.0 を入れる。
  */
-const BASE = process.env.IG_API_BASE ?? "https://graph.instagram.com";
+const BASE = env("IG_API_BASE") ?? "https://graph.instagram.com";
 const TOKEN_KEY = "instagram_access_token";
 
 /** 無期限トークン（システムユーザー等）を使っている場合は更新処理を行わない。 */
-export const tokenIsPermanent = () => process.env.IG_TOKEN_PERMANENT === "true";
+export const tokenIsPermanent = () => env("IG_TOKEN_PERMANENT") === "true";
 
 type PublishResult = { mediaId: string; permalink: string | null };
 
 /** 保存済みトークンを優先し、なければ環境変数を使う（初回は env から入る）。 */
 async function accessToken(): Promise<string> {
   const saved = await prisma.appSetting.findUnique({ where: { key: TOKEN_KEY } });
-  const token = saved?.value ?? process.env.IG_ACCESS_TOKEN;
+  const token = saved?.value?.trim() || env("IG_ACCESS_TOKEN");
   if (!token) throw new Error("IG_ACCESS_TOKEN が未設定です");
   return token;
 }
@@ -48,7 +49,7 @@ async function accessToken(): Promise<string> {
  * 取り違えると疎通しない。指定しないのが一番安全。
  */
 function userId(): string {
-  return process.env.IG_USER_ID ?? "me";
+  return env("IG_USER_ID") ?? "me";
 }
 
 function call(path: string, params: Record<string, string>, method: "GET" | "POST" = "GET") {
@@ -159,8 +160,8 @@ async function waitUntilReady(creationId: string, token: string, attempts = 12) 
  * 初回に1度だけ実行する。以降は refreshAccessToken() が延長していく。
  */
 export async function exchangeForLongLivedToken() {
-  const short = process.env.IG_ACCESS_TOKEN;
-  const secret = process.env.IG_APP_SECRET;
+  const short = env("IG_ACCESS_TOKEN");
+  const secret = env("IG_APP_SECRET");
   if (!short) throw new Error("IG_ACCESS_TOKEN（短命トークン）が未設定です");
   if (!secret) throw new Error("IG_APP_SECRET が未設定です");
 

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { cronAuthorized } from "@/lib/cron-auth";
 import { imageIsReachable, publishImage, publishingQuota } from "@/lib/instagram";
 import { QUEUE, imageUrl } from "@/lib/social-queue";
+import { env } from "@/lib/env";
 
 /**
  * 1日1回、キューの先頭から未投稿のものを1件だけ投稿する。
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
   }
 
-  if (!process.env.IG_ACCESS_TOKEN) {
+  if (!env("IG_ACCESS_TOKEN")) {
     // 認証情報がまだ入っていない段階でも cron は毎日走る。500 で埋めない。
     return NextResponse.json({ status: "not_configured" });
   }

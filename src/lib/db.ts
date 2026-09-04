@@ -1,5 +1,6 @@
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { PrismaClient } from "@/generated/prisma/client";
+import { env } from "@/lib/env";
 
 /**
  * Prisma クライアント。
@@ -10,12 +11,12 @@ import { PrismaClient } from "@/generated/prisma/client";
  *   LP など DB を使わないページまで巻き添えにしないための遅延生成。
  */
 function createPrisma(): PrismaClient {
-  const url = process.env.TURSO_DATABASE_URL ?? process.env.DATABASE_URL;
+  const url = env("TURSO_DATABASE_URL") ?? env("DATABASE_URL");
   if (!url) throw new Error("DATABASE_URL（または TURSO_DATABASE_URL）が未設定です");
 
   const adapter = new PrismaLibSql({
     url,
-    authToken: process.env.TURSO_AUTH_TOKEN,
+    authToken: env("TURSO_AUTH_TOKEN"),
   });
   return new PrismaClient({ adapter });
 }

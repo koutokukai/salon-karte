@@ -6,12 +6,13 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { isSalonType, type SalonType } from "@/lib/salon";
+import { env } from "@/lib/env";
 
 const COOKIE_NAME = "sk_session";
 const MAX_AGE_SEC = 60 * 60 * 24 * 30;
 
 function secret() {
-  const value = process.env.AUTH_SECRET;
+  const value = env("AUTH_SECRET");
   if (!value || value.length < 16) {
     throw new Error("AUTH_SECRET が未設定、または短すぎます（16文字以上）");
   }
