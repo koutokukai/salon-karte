@@ -73,51 +73,51 @@
   .hero {
     position: relative;
     overflow: hidden;
-    background: #101018;
-    color: #f3f1f7;
-    padding: 3rem 0 0;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 2.25rem 0 0;
   }
   .hero-bg {
-    position: absolute; inset: 0 0 auto 0; width: 100%; height: 58%;
-    object-fit: cover; object-position: 30% 55%;
-    opacity: 0.42; filter: saturate(0.75);
+    position: absolute; inset: 0 0 auto 0; width: 100%; height: 62%;
+    object-fit: cover; object-position: 30% 50%;
+    opacity: 0.5;
   }
   .hero-veil {
     position: absolute; inset: 0;
     background:
-      radial-gradient(ellipse at 50% 0%, var(--trade) 0%, transparent 62%),
-      linear-gradient(to bottom, rgba(16,16,24,0.55) 0%, rgba(16,16,24,0.92) 46%, #101018 72%);
+      radial-gradient(ellipse at 78% 8%, color-mix(in srgb, var(--trade) 22%, transparent) 0%, transparent 55%),
+      linear-gradient(to bottom, rgba(247,246,243,0.72) 0%, rgba(247,246,243,0.93) 42%, var(--paper) 68%);
     transition: background 0.4s;
     pointer-events: none;
   }
   .hero > .shell, .hero > .hero-foot { position: relative; z-index: 1; }
-  .hero h1 { color: #fff; }
-  .hero .lede { color: #b9b6c6; }
+  .hero h1 { color: var(--ink); }
+  .hero .lede { color: var(--ink-2); }
 
   .brand { display: flex; align-items: center; gap: 0.6rem; }
   .brand img { width: 2.4rem; height: 2.4rem; border-radius: 0.7rem; display: block; }
-  .brand span { font-family: var(--display); font-size: 1rem; font-weight: 700; color: #fff; }
+  .brand span { font-family: var(--display); font-size: 1rem; font-weight: 700; color: var(--ink); }
 
   .badge {
     display: inline-flex; align-items: center; gap: 0.5rem;
     font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em;
-    color: #fff; background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.28);
+    color: var(--ink-2); background: var(--surface);
+    border: 1px solid var(--line);
     border-radius: 999px; padding: 0.35rem 0.9rem; align-self: flex-start;
   }
-  .badge b { font-size: 1.05rem; font-weight: 500; color: var(--trade); filter: brightness(1.5); }
+  .badge b { font-size: 1.05rem; font-weight: 700; color: var(--trade); }
 
   .hero-note {
-    font-size: 0.92rem; color: #d6d3e0;
+    font-size: 0.92rem; color: var(--ink-2);
     border-left: 2px solid var(--trade); padding-left: 0.9rem;
   }
 
   .cta {
     display: block; text-align: center; text-decoration: none;
     font-family: var(--body); font-size: 1.02rem; font-weight: 700;
-    background: #fff; color: #16161e;
+    background: var(--ink); color: var(--paper);
     border: 0; border-radius: 8px; padding: 1.05rem 1rem; width: 100%;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.28);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
   }
   .cta.dark { background: var(--ink); color: var(--paper); box-shadow: 0 8px 24px rgba(0,0,0,0.14); }
   .cta.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
@@ -126,8 +126,8 @@
   .switch { display: flex; gap: 0.4rem; flex-wrap: wrap; }
   .switch button {
     font-family: var(--body); font-size: 0.85rem; font-weight: 500;
-    color: #d9d6e2; background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.2);
+    color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line);
     border-radius: 999px; padding: 0.5rem 0.95rem; min-height: 44px; cursor: pointer;
     transition: background 0.18s, color 0.18s, border-color 0.18s;
   }
@@ -146,7 +146,7 @@
     border-radius: 2.2rem;
     padding: 0.55rem;
     background: linear-gradient(160deg, #3a3a46, #16161d 60%);
-    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.08);
+    box-shadow: 0 24px 50px -14px rgba(21,22,28,0.35), 0 0 0 1px rgba(21,22,28,0.06);
     margin-bottom: -3.5rem;
   }
   .device-screen {
@@ -160,7 +160,7 @@
   }
 
   .hero-foot { padding-block: 4.75rem 2.5rem; }
-  .hero-foot .caption { font-size: 0.82rem; color: #8f8c9d; text-align: center; }
+  .hero-foot .caption { font-size: 0.82rem; color: var(--ink-2); text-align: center; }
 
   /* ══ 紙 vs アプリ ═══════════════════════════════ */
 
@@ -214,13 +214,14 @@
   /* ══ 特典 ═══════════════════════════════════════ */
 
   .gift {
-    border-radius: 12px; padding: 2rem 1.5rem; color: #fff;
-    background: linear-gradient(150deg, var(--trade), color-mix(in srgb, var(--trade) 55%, #17161f));
+    border-radius: 12px; padding: 2rem 1.5rem; color: var(--ink);
+    background: color-mix(in srgb, var(--trade) 12%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--trade) 35%, transparent);
     display: flex; flex-direction: column; gap: 0.9rem;
   }
-  .gift .kicker { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.16em; opacity: 0.85; }
+  .gift .kicker { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.16em; color: var(--trade); }
   .gift .headline { font-family: var(--display); font-weight: 900; font-size: 1.75rem; line-height: 1.4; }
-  .gift p { font-size: 0.92rem; color: rgba(255,255,255,0.9); }
+  .gift p { font-size: 0.92rem; color: var(--ink-2); }
 
   .terms { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
   .terms th, .terms td { text-align: left; padding: 0.85rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
@@ -295,7 +296,7 @@
       </div>
 
       <div class="stack g-md">
-        <span class="eyebrow" style="color:#8f8c9d">業種を選んでください</span>
+        <span class="eyebrow">業種を選んでください</span>
         <div class="switch" role="group" aria-label="業種を選ぶ">
           <button type="button" data-trade="nail" aria-pressed="true">ネイル</button>
           <button type="button" data-trade="eyelash" aria-pressed="false">マツエク</button>
