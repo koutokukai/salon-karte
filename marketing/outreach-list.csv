@@ -1,4 +1,17 @@
 no,handle,url,業種,フォロワー数,判定,送信日,テンプレ,返信,ステータス,メモ
-1,@example_nail_01,https://www.instagram.com/example_nail_01/,ネイル,820,◯,2026-09-05,初回,,送信済,横浜/自宅サロン/予約はDM/8月にオープン投稿あり。7日後(09-12)にフォロー1通
-2,@example_lash_02,https://www.instagram.com/example_lash_02/,マツエク,1450,◯,2026-09-05,初回b,あり,返信あり,料金を聞かれた→返しAで返信済。当日中に対応済/業種確認まち
-3,@example_hair_03,https://www.instagram.com/example_hair_03/,ヘア,4200,✕,,,,対象外,スタッフ4名・求人投稿あり・プロフに予約サイトのリンク。法人臭のため除外
+1,@llainail,https://www.instagram.com/llainail/,ネイル,636,◯,,初回b,,未送信,宮城/仙台／自宅サロン。9/26に明石台→泉中央へ移転。予約はtimetree。お子様連れ可・現金のみ＝個人運営。施術写真は自前
+2,@nail__set.m,https://www.instagram.com/nail__set.m/,ネイル,433,◯,,初回b,,未送信,茨城/つくば／完全予約制プライベートサロン。巻き爪・爪噛み等のトラブル爪対応。予約は自社サイト（基幹システムではない）。1人運営
+3,@yuiyui120803,https://www.instagram.com/yuiyui120803/,ネイル,432,◯,,初回b,,未送信,兵庫/尼崎／自宅ネイルサロン。予約はLINE公式のみ＝まだ何も入れていない。ハイライト多数で更新が活発
+4,@moeye_yuki,https://www.instagram.com/moeye_yuki/,マツエク,173,◯,,初回b,,未送信,三重/津市安濃町／完全予約制の自宅サロン。予約はLINE公式。投稿55件＝開業から日が浅い。フォロワーは基準下限未満だが他7項目のうち5つ該当
+5,@73saki73,https://www.instagram.com/73saki73/,マツエク,1146,◯,,初回b,,未送信,（記載なし）／自宅サロン。予約はDMとLINE公式。美容師免許・保健所登録済。English menuあり。1人運営
+6,@rivera.1001s,https://www.instagram.com/rivera.1001s/,マツエク,935,◯,,初回b,,未送信,東京/中野区野方／プライベートサロン。アイラッシュ歴14年。予約はLINE公式。LEDエクステが強み
+7,@barila0915,https://www.instagram.com/barila0915/,リラク,2033,◯,,初回b,,未送信,沖縄/南城市大里／自宅サロン。投稿31件＝開業から日が浅い。看板犬・お子様連れ可。サイトはGoogleサイトの自作
+8,@yamamoto_hogushi,https://www.instagram.com/yamamoto_hogushi/,リラク,411,◯,,初回b,,未送信,"兵庫/姫路市豊富町／自宅サロン。予約はLINE公式。60分2,500円と明朗会計。投稿45件＝開業から日が浅い"
+9,@a_r.matsuge,https://www.instagram.com/a_r.matsuge/,マツエク,86,✕,,,,対象外,千葉/成田／プロフにホットペッパービューティーのリンク＝既に基幹システムあり
+10,@relaxationsalon_mally,https://www.instagram.com/relaxationsalon_mally/,リラク,80,✕,,,,対象外,静岡/浜松／プロフにホットペッパービューティーのリンク＝既に基幹システムあり
+11,@chr___.nail,https://www.instagram.com/chr___.nail/,ネイル,490,✕,,,,対象外,佐賀／ハイライトに school あり＝スクール事業
+12,@pinkish___nail,https://www.instagram.com/pinkish___nail/,ネイル,62,✕,,,,対象外,福岡/高砂／フォロワー62人で下限未満。前アカウントが乗っ取り被害中との告知あり
+13,@eye_lash_0602,https://www.instagram.com/eye_lash_0602/,マツエク,29,✕,,,,対象外,大阪/生野区／フォロワー29人・投稿4件。開業前の段階
+14,@mone.na_il,https://www.instagram.com/mone.na_il/,ネイル,143,△,,,,保留,神奈川/川崎／フォロワー143人で下限未満。楽天ROOMのリンクあり＝物販色。枠が余ったら再検討
+15,@mako_ihana1999,https://www.instagram.com/mako_ihana1999/,ネイル,415,△,,,,保留,北海道/札幌／nailie.jp（予約アプリ）のリンクあり。DM予約も併記なので判断が割れる。枠が余ったら再検討
+16,@nail.anc,https://www.instagram.com/nail.anc/,ネイル,73,△,,,,保留,千葉/流山／フォロワー73人で下限未満。投稿347件と活発なので、伸びたら再検討
