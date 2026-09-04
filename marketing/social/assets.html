@@ -24,6 +24,49 @@
   .cover svg { width:430px; height:430px; }
   svg { stroke:var(--violet); fill:none; stroke-width:22; stroke-linecap:round; stroke-linejoin:round; }
   .cover svg { stroke-width:14; }
+
+  /* ══ ハイライトカバー ══
+     直径60pxの円に縮む前提。細線は使わず、文字の面で見せる。
+     中央の直径600px以内に収める（Instagram が円で切り抜くため）。 */
+  .hl { background:linear-gradient(155deg,#f3ede9 0%,#e8ddd9 55%,#dfd2d3 100%); align-items:center; justify-content:center; }
+  .hl::before {
+    content:""; position:absolute; left:50%; top:50%; width:740px; height:740px;
+    transform:translate(-50%,-50%); border-radius:50%;
+    border:2px solid rgba(93,74,110,.20);
+  }
+  .hl-in {
+    position:relative; width:700px; height:700px; border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:34px;
+    color:#4a3b55; text-align:center;
+  }
+  .hl-en {
+    font-family:"Roboto Mono",monospace; font-size:38px; letter-spacing:.34em;
+    color:#8a7a93; text-indent:.34em;
+  }
+  .hl-jp {
+    font-family:"Zen Old Mincho",serif; font-weight:900; font-size:158px; line-height:1.26;
+    letter-spacing:.04em;
+  }
+  .hl-two .hl-jp { font-size:126px; }
+  .hl-accent { color:#fff; }
+  .hl-accent .hl-en { color:rgba(255,255,255,.82); }
+  .art[data-name="cover-5-monitor"] { background:linear-gradient(155deg,#6f5a80 0%,#5b4769 60%,#493757 100%); }
+  .art[data-name="cover-5-monitor"]::before { border-color:rgba(255,255,255,.34); }
+
+  /* ══ プロフィールアイコン ══ */
+  .icon { background:linear-gradient(155deg,#6f5a80 0%,#5b4769 58%,#493757 100%); align-items:center; justify-content:center; }
+  .icon svg { width:600px; height:600px; }
+
+  /* アイコン別案：屋号の頭文字を明朝で。32pxまで縮んでも形が残る。 */
+  .icon-word { position:relative; }
+  .icon-word::before {
+    content:""; position:absolute; left:50%; top:50%; width:780px; height:780px;
+    transform:translate(-50%,-50%); border-radius:50%; border:6px solid rgba(255,255,255,.30);
+  }
+  .icon-word .mark {
+    position:relative; font-family:"Zen Old Mincho",serif; font-weight:900;
+    font-size:470px; line-height:1; color:#fff; margin-top:-18px;
+  }
 </style>
 
 <!-- ══ 文字だけの投稿 ══ -->
@@ -64,55 +107,45 @@
 </div>
 
 <!-- ══ プロフィールアイコン ══ -->
-<div class="art flat" data-name="icon-profile">
+<!-- フィードでは32px、プロフィールでも150px程度。細線は消えるので面で作る。 -->
+<div class="art icon" data-name="icon-profile">
   <svg viewBox="0 0 200 200">
-    <rect x="34" y="24" width="132" height="152" rx="18"/>
-    <line x1="66" y1="70" x2="134" y2="70"/>
-    <line x1="66" y1="100" x2="134" y2="100" stroke-width="30"/>
-    <line x1="66" y1="132" x2="110" y2="132"/>
+    <rect x="42" y="28" width="116" height="144" rx="20" fill="none" stroke="#fff" stroke-width="13"/>
+    <rect x="70" y="66" width="60" height="13" rx="6.5" fill="#fff" stroke="none"/>
+    <rect x="70" y="94" width="60" height="13" rx="6.5" fill="#fff" stroke="none"/>
+    <rect x="70" y="122" width="34" height="13" rx="6.5" fill="#fff" stroke="none"/>
   </svg>
+</div>
+
+<!-- プロフィールアイコン（別案：明朝の一文字マーク） -->
+<div class="art icon icon-word" data-name="icon-profile-word">
+  <span class="mark">カ</span>
 </div>
 
 <!-- ══ ハイライトカバー ══ -->
-<div class="art cover" data-name="cover-1-about">
-  <svg viewBox="0 0 200 200">
-    <rect x="40" y="30" width="120" height="140" rx="16"/>
-    <line x1="70" y1="72" x2="130" y2="72"/>
-    <line x1="70" y1="102" x2="130" y2="102"/>
-    <line x1="70" y1="132" x2="105" y2="132"/>
-  </svg>
+<!--
+  ハイライトは**プロフィールで直径60px前後の円**に縮む。
+  細い線画はここで消える。文字を主役にして、縮んでも読めるようにする。
+  Instagram は中央を円で切り抜くので、要素は中央の直径600px以内に収める。
+-->
+<div class="art hl" data-name="cover-1-about">
+  <div class="hl-in"><span class="hl-en">ABOUT</span><span class="hl-jp">はじめに</span></div>
 </div>
 
-<div class="art cover" data-name="cover-2-howto">
-  <svg viewBox="0 0 200 200">
-    <rect x="58" y="24" width="84" height="152" rx="16"/>
-    <polyline points="78,104 95,122 126,84"/>
-  </svg>
+<div class="art hl" data-name="cover-2-howto">
+  <div class="hl-in"><span class="hl-en">HOW TO</span><span class="hl-jp">使い方</span></div>
 </div>
 
-<div class="art cover" data-name="cover-3-price">
-  <svg viewBox="0 0 200 200">
-    <circle cx="100" cy="100" r="72"/>
-    <polyline points="72,66 100,102 128,66"/>
-    <line x1="100" y1="102" x2="100" y2="140"/>
-    <line x1="74" y1="110" x2="126" y2="110"/>
-  </svg>
+<div class="art hl" data-name="cover-3-price">
+  <div class="hl-in"><span class="hl-en">PRICE</span><span class="hl-jp">料金</span></div>
 </div>
 
-<div class="art cover" data-name="cover-4-faq">
-  <svg viewBox="0 0 200 200">
-    <path d="M36 60a16 16 0 0 1 16-16h96a16 16 0 0 1 16 16v62a16 16 0 0 1-16 16H86l-34 30v-30h-0a16 16 0 0 1-16-16z"/>
-    <path d="M86 84a15 15 0 1 1 20 14v10"/>
-    <line x1="106" y1="126" x2="106" y2="127"/>
-  </svg>
+<div class="art hl" data-name="cover-4-faq">
+  <div class="hl-in hl-two"><span class="hl-en">Q &amp; A</span><span class="hl-jp">よくある<br>質問</span></div>
 </div>
 
-<div class="art cover" data-name="cover-5-monitor">
-  <svg viewBox="0 0 200 200">
-    <circle cx="100" cy="100" r="70"/>
-    <line x1="100" y1="66" x2="100" y2="134"/>
-    <line x1="66" y1="100" x2="134" y2="100"/>
-  </svg>
+<div class="art hl" data-name="cover-5-monitor">
+  <div class="hl-in hl-two hl-accent"><span class="hl-en">MONITOR</span><span class="hl-jp">モニター<br>募集</span></div>
 </div>
 
 <!-- ══ アプリ画面の投稿（#5） ══ -->
