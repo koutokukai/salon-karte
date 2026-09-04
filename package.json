@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "db:push": "prisma db push",
-    "db:seed": "node --experimental-transform-types prisma/seed.ts"
+    "db:seed": "node prisma/seed.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
