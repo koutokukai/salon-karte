@@ -19,8 +19,17 @@ import { prisma } from "@/lib/db";
  *   モニター募集のDMは人が送る前提のまま。
  */
 
-const BASE = "https://graph.instagram.com";
+/**
+ * 接続先。2通りの取り方に対応する。
+ *   A) Instagram ログイン       … graph.instagram.com ／ 長期トークン60日（月次で自動更新）
+ *   B) Facebookページ経由        … graph.facebook.com  ／ システムユーザーなら無期限
+ * B を使う場合は IG_API_BASE に https://graph.facebook.com/v21.0 を入れる。
+ */
+const BASE = process.env.IG_API_BASE ?? "https://graph.instagram.com";
 const TOKEN_KEY = "instagram_access_token";
+
+/** 無期限トークン（システムユーザー等）を使っている場合は更新処理を行わない。 */
+export const tokenIsPermanent = () => process.env.IG_TOKEN_PERMANENT === "true";
 
 type PublishResult = { mediaId: string; permalink: string | null };
 
@@ -38,8 +47,11 @@ function userId(): string {
   return id;
 }
 
-async function call(path: string, params: Record<string, string>, method: "GET" | "POST" = "GET") {
-  const url = new URL(`${BASE}${path}`);
+function call(path: string, params: Record<string, string>, method: "GET" | "POST" = "GET") {
+  return callAt(new URL(`${BASE}${path}`), params, method);
+}
+
+async function callAt(url: URL, params: Record<string, string>, method: "GET" | "POST" = "GET") {
   const init: RequestInit = { method };
 
   if (method === "GET") {
@@ -144,8 +156,13 @@ async function waitUntilReady(creationId: string, token: string, attempts = 12) 
  * 60日放置すると失効するので、月1回の cron で叩く。
  */
 export async function refreshAccessToken() {
+  if (tokenIsPermanent()) {
+    throw new Error("無期限トークンのため更新は不要です");
+  }
   const token = await accessToken();
-  const json = await call("/refresh_access_token", {
+  // 更新は Instagram ログインのトークンだけが対象。ホストは固定する。
+  const url = new URL("https://graph.instagram.com/refresh_access_token");
+  const json = await callAt(url, {
     grant_type: "ig_refresh_token",
     access_token: token,
   });

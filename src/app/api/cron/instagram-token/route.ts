@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { cronAuthorized } from "@/lib/cron-auth";
-import { refreshAccessToken } from "@/lib/instagram";
+import { refreshAccessToken, tokenIsPermanent } from "@/lib/instagram";
 
 /**
  * 長期アクセストークンの更新。60日放置すると失効するため月1回叩く。
@@ -13,6 +13,11 @@ export async function GET(request: NextRequest) {
 
   if (!process.env.IG_ACCESS_TOKEN) {
     return NextResponse.json({ status: "not_configured" });
+  }
+
+  if (tokenIsPermanent()) {
+    // システムユーザー等の無期限トークン。更新するものがない。
+    return NextResponse.json({ status: "permanent_token" });
   }
 
   try {

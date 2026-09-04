@@ -33,7 +33,22 @@ GET /api/cron/instagram
 
 **画像が未配置ならキューを飛ばさず待ちます。** 投稿順が崩れないようにするため。
 
-トークンは60日で失効するので、毎月1日に `/api/cron/instagram-token` が更新します。
+### トークンの寿命は取り方で変わる
+
+| 取り方 | 寿命 | 手間 |
+|---|---|---|
+| **A. Instagram ログイン** | **60日**（毎月1日の cron が自動更新） | 少ない。Facebookページ不要 |
+| **B. システムユーザー** | **無期限** | ビジネスポートフォリオとFacebookページの紐付けが必要 |
+
+Aでも `/api/cron/instagram-token` が毎月更新するので、運用上は放置できます。
+「更新の仕組み自体を持ちたくない」場合だけBにしてください。
+
+Bを使う場合は環境変数に以下を足します。更新処理は自動的に止まります。
+```
+IG_API_BASE="https://graph.facebook.com/v21.0"
+IG_TOKEN_PERMANENT="true"
+```
+
 更新後のトークンは `app_settings` テーブルに保存され、以降は環境変数より優先されます。
 
 ## 準備（ユーザー作業）
@@ -41,7 +56,7 @@ GET /api/cron/instagram
 ### 1. アカウントをプロフェッショナルに
 `@karte_lab` を **プロフェッショナル（ビジネス）** に切り替える。個人アカウントではAPIが使えない。
 
-### 2. Meta for Developers でアプリを作る
+### 2-A. Instagram ログインで取る（手軽・60日更新）
 1. アプリを作成し、プロダクトに **Instagram** を追加
 2. **Instagram API with Instagram Login** を選ぶ
 3. 必要な権限：`instagram_business_basic` / `instagram_business_content_publish`
@@ -63,6 +78,20 @@ IG_ACCESS_TOKEN  上で取得した長期トークン
 CRON_SECRET      任意のランダム文字列（cronの認証に使う）
 SITE_URL         省略可。Vercelでは自動で入る
 ```
+
+### 2-B. システムユーザーで取る（無期限）
+
+Aの代わりにこちらでもよい。**60日の更新自体をなくしたい場合だけ。**
+
+1. `@karte_lab` を**ビジネス**アカウントにし、**Facebookページと連携**する
+2. [ビジネス設定](https://business.facebook.com/settings) → ユーザー → **システムユーザー** → 追加（管理者）
+3. アセットを割り当て：**Facebookページ** と **Instagramアカウント**（全権限）、および作成したアプリ
+4. **「新しいトークンを生成」** → アプリを選択 → 有効期限 **「無期限」**
+   権限：`instagram_basic` / `instagram_content_publish` / `pages_show_list` / `pages_read_engagement`
+5. 環境変数に `IG_API_BASE` と `IG_TOKEN_PERMANENT` を足す（上記参照）
+
+**注意：** このトークンも「無条件に永久」ではない。パスワード変更、権限の取り消し、
+システムユーザーの削除、Meta側のセキュリティ判定で失効することがある。
 
 ### 5. 画像を置く
 `public/social/` に、`content/instagram-queue.json` の `image` と同じ名前で保存する。
@@ -87,6 +116,7 @@ SITE_URL         省略可。Vercelでは自動で入る
 | `waiting_for_image` | 画像がまだ置かれていない。翌日また試す |
 | `queue_empty` | キューを投稿しきった。次の投稿を足す |
 | `not_configured` | 環境変数が未設定。エラーではない |
+| `permanent_token` | 無期限トークンのため更新不要（トークン更新cronの応答） |
 | `quota_exceeded` | 24時間の投稿上限に達している |
 | `failed` | API側でエラー。`social_posts.error` に理由が入る |
 
