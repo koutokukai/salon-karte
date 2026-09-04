@@ -1,0 +1,147 @@
+// サロンカルテ製造所 — DB スキーマ
+// 設計原則:
+//   1. tenants.salon_type は登録時に1度だけ設定。UPDATE には含めない（バリデーション層で拒否）
+//   2. カルテは全業種の全カラムを1テーブルで保持。該当しない業種のカラムは NULL のまま
+//   3. 全クエリは tenant_id でスコープする
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  // Node の型ストリップ実行（seed など）でも解決できるよう拡張子付きで出力する
+  moduleFormat        = "esm"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+/// 店舗
+model Tenant {
+  tenantId     String   @id @default(cuid()) @map("tenant_id")
+  tenantName   String   @map("tenant_name")
+  /// 'nail' | 'eyelash' | 'hair' | 'relax' — 登録後は変更不可
+  salonType    String   @map("salon_type")
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  customers Customer[]
+  kartes    Karte[]
+  chats     Chat[]
+
+  @@map("tenants")
+}
+
+/// 顧客基本情報
+model Customer {
+  customerId   String    @id @default(cuid()) @map("customer_id")
+  tenantId     String    @map("tenant_id")
+  customerName String    @map("customer_name")
+  phone        String?
+  email        String?
+  birthday     DateTime?
+  /// 家族構成（JSON文字列）
+  familyInfo     String? @map("family_info")
+  /// ペット情報（JSON文字列）
+  petInfo        String? @map("pet_info")
+  /// 好きな映画（JSON配列文字列）
+  favoriteMovies String? @map("favorite_movies")
+  /// 好きなドラマ（JSON配列文字列）
+  favoriteDramas String? @map("favorite_dramas")
+  /// 好きな食べ物（JSON配列文字列）
+  favoriteFoods  String? @map("favorite_foods")
+  memo           String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant  @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
+  kartes Karte[]
+  chats  Chat[]
+
+  @@index([tenantId])
+  @@index([tenantId, customerName])
+  @@map("customers")
+}
+
+/// 施術カルテ（全業種を1テーブルで保持）
+model Karte {
+  karteId    String   @id @default(cuid()) @map("karte_id")
+  tenantId   String   @map("tenant_id")
+  customerId String   @map("customer_id")
+  visitDate  DateTime @map("visit_date")
+  staffName  String?  @map("staff_name")
+
+  // ── 共通 ──
+  menuName        String? @map("menu_name")
+  price           Int?
+  photoBefore     String? @map("photo_before")
+  photoAfter      String? @map("photo_after")
+  memo            String?
+  counselingNote  String? @map("counseling_note")
+  allergyFlag     Boolean @default(false) @map("allergy_flag")
+  allergyNote     String? @map("allergy_note")
+  /// 次回来店目安（日数）
+  nextVisitGuide  Int?    @map("next_visit_guide")
+
+  // ── ネイル専用 ──
+  nailColorFormula String? @map("nail_color_formula")
+  nailDesignPhoto  String? @map("nail_design_photo")
+  nailShape        String? @map("nail_shape")
+  nailLength       String? @map("nail_length")
+  nailOffType      String? @map("nail_off_type")
+  nailDuration     Int?    @map("nail_duration")
+
+  // ── マツエク専用 ──
+  eyelashCurlType  String? @map("eyelash_curl_type")
+  eyelashCount     Int?    @map("eyelash_count")
+  eyelashThickness String? @map("eyelash_thickness")
+  eyelashLength    String? @map("eyelash_length")
+  eyelashGlueType  String? @map("eyelash_glue_type")
+  eyelashDesign    String? @map("eyelash_design")
+  eyelashDuration  Int?    @map("eyelash_duration")
+
+  // ── ヘア専用 ──
+  hairColorFormula   String? @map("hair_color_formula")
+  hairTreatmentType  String? @map("hair_treatment_type")
+  hairCutLength      String? @map("hair_cut_length")
+  hairPermType       String? @map("hair_perm_type")
+  hairProductUsed    String? @map("hair_product_used")
+  hairDuration       Int?    @map("hair_duration")
+
+  // ── リラク専用 ──
+  relaxPressureLevel   String? @map("relax_pressure_level")
+  relaxTargetArea      String? @map("relax_target_area")
+  relaxOilType         String? @map("relax_oil_type")
+  relaxSymptom         String? @map("relax_symptom")
+  relaxContraindication String? @map("relax_contraindication")
+  relaxDuration        Int?    @map("relax_duration")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
+
+  @@index([tenantId, visitDate])
+  @@index([customerId, visitDate])
+  @@map("kartes")
+}
+
+/// チャット・問い合わせ
+model Chat {
+  chatId      String   @id @default(cuid()) @map("chat_id")
+  tenantId    String   @map("tenant_id")
+  customerId  String   @map("customer_id")
+  /// 'tenant' | 'customer'
+  messageFrom String   @map("message_from")
+  messageBody String   @map("message_body")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [tenantId], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [customerId], onDelete: Cascade)
+
+  @@index([tenantId, customerId, createdAt])
+  @@map("chats")
+}
