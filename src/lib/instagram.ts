@@ -41,10 +41,14 @@ async function accessToken(): Promise<string> {
   return token;
 }
 
+/**
+ * 対象アカウント。
+ * Instagram ログイン方式では "me" が使えるので、既定はこれ。
+ * ダッシュボードに出る数字IDは方式によって別物（アプリスコープIDとビジネスアカウントID）で、
+ * 取り違えると疎通しない。指定しないのが一番安全。
+ */
 function userId(): string {
-  const id = process.env.IG_USER_ID;
-  if (!id) throw new Error("IG_USER_ID が未設定です");
-  return id;
+  return process.env.IG_USER_ID ?? "me";
 }
 
 function call(path: string, params: Record<string, string>, method: "GET" | "POST" = "GET") {

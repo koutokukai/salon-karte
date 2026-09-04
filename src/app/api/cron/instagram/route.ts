@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "認証が必要です" }, { status: 401 });
   }
 
-  if (!process.env.IG_USER_ID || !process.env.IG_ACCESS_TOKEN) {
+  if (!process.env.IG_ACCESS_TOKEN) {
     // 認証情報がまだ入っていない段階でも cron は毎日走る。500 で埋めない。
     return NextResponse.json({ status: "not_configured" });
   }
