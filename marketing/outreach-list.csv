@@ -1,5 +1,4 @@
-送信日,プラットフォーム,アカウント,業種,地域,フォロワー数,状態,次アクション日,メモ
-,Instagram,,ネイル,,,未送信,,
-,Instagram,,マツエク,,,未送信,,
-,Instagram,,ヘア,,,未送信,,
-,Instagram,,リラク,,,未送信,,
+no,handle,url,業種,フォロワー数,判定,送信日,テンプレ,返信,ステータス,メモ
+1,@example_nail_01,https://www.instagram.com/example_nail_01/,ネイル,820,◯,2026-09-05,初回,,送信済,横浜/自宅サロン/予約はDM/8月にオープン投稿あり。7日後(09-12)にフォロー1通
+2,@example_lash_02,https://www.instagram.com/example_lash_02/,マツエク,1450,◯,2026-09-05,初回b,あり,返信あり,料金を聞かれた→返しAで返信済。当日中に対応済/業種確認まち
+3,@example_hair_03,https://www.instagram.com/example_hair_03/,ヘア,4200,✕,,,,対象外,スタッフ4名・求人投稿あり・プロフに予約サイトのリンク。法人臭のため除外
