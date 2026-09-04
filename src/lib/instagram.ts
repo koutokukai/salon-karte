@@ -151,6 +151,34 @@ async function waitUntilReady(creationId: string, token: string, attempts = 12) 
 }
 
 /**
+ * 短命トークン（1時間）を60日の長期トークンに交換して保存する。
+ * 初回に1度だけ実行する。以降は refreshAccessToken() が延長していく。
+ */
+export async function exchangeForLongLivedToken() {
+  const short = process.env.IG_ACCESS_TOKEN;
+  const secret = process.env.IG_APP_SECRET;
+  if (!short) throw new Error("IG_ACCESS_TOKEN（短命トークン）が未設定です");
+  if (!secret) throw new Error("IG_APP_SECRET が未設定です");
+
+  const json = await callAt(new URL("https://graph.instagram.com/access_token"), {
+    grant_type: "ig_exchange_token",
+    client_secret: secret,
+    access_token: short,
+  });
+
+  const long = typeof json.access_token === "string" ? json.access_token : null;
+  if (!long) throw new Error("交換後のトークンが返りませんでした");
+
+  await prisma.appSetting.upsert({
+    where: { key: TOKEN_KEY },
+    update: { value: long },
+    create: { key: TOKEN_KEY, value: long },
+  });
+
+  return { expiresIn: Number(json.expires_in ?? 0) };
+}
+
+/**
  * 長期トークンを更新して保存する。
  * 発行から24時間経過後であればいつでも更新でき、更新するとそこから60日延びる。
  * 60日放置すると失効するので、月1回の cron で叩く。
