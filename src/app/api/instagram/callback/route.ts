@@ -9,6 +9,8 @@ import { diagPage } from "@/lib/diag-page";
 const STATE_COOKIE = "ig_oauth_state";
 const TOKEN_KEY = "instagram_access_token";
 const TICKET_KEY = "publish_ticket";
+/** 手動投稿を数回に分けて出せるよう、接続から2時間は有効にする。 */
+const TICKET_TTL_MS = 2 * 60 * 60 * 1000;
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
@@ -51,8 +53,8 @@ export async function GET(request: NextRequest) {
     const ticket = randomBytes(16).toString("hex");
     await prisma.appSetting.upsert({
       where: { key: TICKET_KEY },
-      update: { value: `${ticket}:${Date.now() + 15 * 60 * 1000}` },
-      create: { key: TICKET_KEY, value: `${ticket}:${Date.now() + 15 * 60 * 1000}` },
+      update: { value: `${ticket}:${Date.now() + TICKET_TTL_MS}` },
+      create: { key: TICKET_KEY, value: `${ticket}:${Date.now() + TICKET_TTL_MS}` },
     });
 
     const posted = await prisma.socialPost.findMany({
@@ -82,7 +84,9 @@ export async function GET(request: NextRequest) {
         ["画像の公開URL", firstImage],
         ["画像の状態", imageState],
       ],
-      next ? { href: `/api/instagram/publish?ticket=${ticket}`, label: "今すぐ1件投稿する" } : undefined,
+      next
+        ? { href: `/api/instagram/publish?ticket=${ticket}&count=3`, label: "今すぐ3件投稿する" }
+        : undefined,
     );
   } catch (caught) {
     const message = caught instanceof Error ? caught.message : "不明なエラー";
